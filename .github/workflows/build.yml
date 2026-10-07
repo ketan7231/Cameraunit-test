@@ -15,10 +15,10 @@ jobs:
         run: yes | sdkmanager --licenses > /dev/null || true
       - name: Patch old build files
         run: |
-          grep -rn "jaredsburrows\|licenseReport" --include=*.gradle . || true
           sed -i "/gradle-license-plugin/d" build.gradle
-          find . -name "*.gradle" -exec sed -i -e "/com.jaredsburrows.license/d" -e "s/jcenter()/mavenCentral()/g" {} +
-          find . -name "*.gradle" -exec perl -0pi -e 's/licenseReport\s*\{[^{}]*\}//g' {} +
+          sed -i "/com.jaredsburrows.license/d" app/build.gradle
+          sed -i "s/jcenter()/mavenCentral()/g" build.gradle app/build.gradle
+          grep -rn "jaredsburrows" --include=*.gradle . || echo "plugin removed"
       - run: chmod +x gradlew && ./gradlew :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
