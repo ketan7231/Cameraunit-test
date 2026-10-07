@@ -1,0 +1,20 @@
+name: Build CameraUnit demo
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: oppo/CameraUnit
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses > /dev/null || true
+      - run: chmod +x gradlew && ./gradlew :app:assembleDebug --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CameraUnit-demo-debug
+          path: app/build/outputs/apk/debug/*.apk
